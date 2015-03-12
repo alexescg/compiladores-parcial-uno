@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package proyecto.compiladores;
 
 /**
@@ -47,7 +41,7 @@ package proyecto.compiladores;
  * Pruebas(almenos 8 de mas de 5 lineas cada uno)
  * Estandar de codificacion
  * tecnica PRD
- * @author alex
+ * @author Alejandro Escobedo Garcia.
  */
 public class CompiladorSoloPaso {
     
@@ -61,5 +55,21 @@ public class CompiladorSoloPaso {
     private static final int ASIGNACIONDOSPUNTOS = ':';
     private static final int ASIGNACIONIGUAL = '=';
     private static final int EOF = '.';
+    private static final int APOSTROFES = '\'';
+    private Token currentToken;
+    
+    public static void main(String[] args) {
+        System.out.println(String.format("%s", (char) APOSTROFES));
+    }
+    
+    private Token lexer(){
+        Token token = null;
+        if(this.getTokenizer("").hasMoreTokens()){
+            String currentToken = this.getTokenizer("")
+                .nextToken();
+        if()
+        }
+        return null;
+    }
     
 }
