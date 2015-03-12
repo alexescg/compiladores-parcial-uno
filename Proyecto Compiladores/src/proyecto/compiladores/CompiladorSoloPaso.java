@@ -93,27 +93,27 @@ public class CompiladorSoloPaso {
     }
     
     public void prog(){
-        //TODO
+        conjProds();
     }
     
     public void conjProds(){
-        //TODO
+        prod();
     }
     
     public void prod(){
-        //TODO
+        expr();
     }
     
     public void expr(){
-        //TODO
+        term();
     }
     
     public void term(){
-        //TODO
+        factor();
     }
     
     public void factor(){
-        //TODO
+        primario();
     }
     
     public void primario(){
