@@ -1,5 +1,7 @@
 package proyecto.compiladores;
 
+import java.util.StringTokenizer;
+
 /**
  * Construir un CSP para un lenguaje de producciones gramaticales,
  * el alfabeto se compone de los siguientes simbolos:
@@ -56,20 +58,38 @@ public class CompiladorSoloPaso {
     private static final int ASIGNACIONIGUAL = '=';
     private static final int EOF = '.';
     private static final int APOSTROFES = '\'';
+    private static final String ASIGNACION = String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS,  (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
+    private String salida = "";
+    private static Integer linea = 1;
+    private StringTokenizer tokenizer = null;
+    private int VARIABLE = 500;
     
-    public static void main(String[] args) {
-        System.out.println(String.format("%s", (char) APOSTROFES));
-    }
-    
-    private Token lexer(){
-        Token token = null;
-        if(this.getTokenizer("").hasMoreTokens()){
-            String currentToken = this.getTokenizer("")
-                .nextToken();
-        if()
+    //TODO checar este javadoc
+    /**
+     * Tokenizer para obtener los tokens del codigo fuente
+     * @param codigoFuente que se leera mediante un archivo
+     * @return codigo fuente sin espacios?
+     */
+    private StringTokenizer getTokenizer(String codigoFuente){
+        if (this.tokenizer == null) {
+            //;&|{}[]:;=.'
+            String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s%s",
+                    (char) FIN_SENT,
+                    (char) CONCATENACION,
+                    (char) ALTERNACION,
+                    (char) CERRADURA_CERO_MAS_DER,
+                    (char) CERRADURA_CERO_MAS_IZQ,
+                    (char) CERRADURA_CERO_UNO_DER,
+                    (char) CERRADURA_CERO_UNO_IZQ,
+                    (char) ASIGNACIONDOSPUNTOS,
+                    (char) ASIGNACIONIGUAL,
+                    (char) EOF,
+                    (char) APOSTROFES
+                    );
+            this.tokenizer = new StringTokenizer(codigoFuente.trim(), alfabetoSimbolos, true);
         }
-        return null;
+        return this.tokenizer;
     }
     
     public void prog(){
