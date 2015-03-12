@@ -167,20 +167,20 @@ public class CompiladorSoloPaso {
                                 String.format("%s", (char) tokenSimple));
                         break;
                     case CERRADURA_CERO_UNO_IZQ:
-                        token = new Token(this.linea, 
+                        token = new Token(CompiladorSoloPaso.linea, 
                                 CERRADURA_CERO_UNO_IZQ, String.format("%s",
                                         (char) tokenSimple));
                         break;
                     case ASIGNACIONDOSPUNTOS:
-                        token = new Token(this.linea, ASIGNACIONDOSPUNTOS, 
+                        token = new Token(CompiladorSoloPaso.linea, ASIGNACIONDOSPUNTOS, 
                                 String.format("%s", (char) tokenSimple));
                         break;
                     case ASIGNACIONIGUAL:
-                        token = new Token(this.linea, ASIGNACIONIGUAL, 
+                        token = new Token(CompiladorSoloPaso.linea, ASIGNACIONIGUAL, 
                                 String.format("%s", (char) tokenSimple));
                         break;
                     case APOSTROFES:
-                        token = new Token(this.linea, APOSTROFES, 
+                        token = new Token(CompiladorSoloPaso.linea, APOSTROFES, 
                                 String.format("%s", (char) tokenSimple));
                         break;
                     default:
