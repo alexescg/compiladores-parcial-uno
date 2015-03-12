@@ -124,8 +124,8 @@ public class CompiladorSoloPaso {
     private Token lexer(){
         Token token = null;
         if(this.getTokenizer("").hasMoreTokens()){
-            String currentToken = this.getTokenizer("")
-                .nextToken();
+            String currentToken = this.getTokenizer("").nextToken();
+            
             if(isVariable(currentToken)){
                 token = new Token(this.linea, VARIABLE, currentToken);
             }
@@ -133,24 +133,42 @@ public class CompiladorSoloPaso {
                int tokenSimple = currentToken.charAt(0);
                switch (tokenSimple) {
                    case FIN_SENT :
-                       token = new Token(this.linea, FIN_SENT, String.format("%s", (char) tokenSimple));
+                       token = new Token(this.linea, 
+                               FIN_SENT,
+                               String.format("%s", (char) tokenSimple));
                        linea++;
                     break;
+                       
                    case CONCATENACION:
-                       token = new Token(this.linea, CONCATENACION,String.format("%s",(char) tokenSimple));
+                       token = new Token(this.linea,
+                               CONCATENACION,
+                               String.format("%s",(char) tokenSimple));
                        break;
+                       
                    case ALTERNACION:
-                       token = new Token(this.linea, ALTERNACION, String.format("%s", (char) tokenSimple));
+                       token = new Token(this.linea,
+                               ALTERNACION,
+                               String.format("%s", (char) tokenSimple));
                        break;
+                       
                    case CERRADURA_CERO_MAS_DER:
-                       token = new Token(this.linea, CERRADURA_CERO_MAS_DER, String.format("%s", (char) tokenSimple));
+                       token = new Token(this.linea,
+                               CERRADURA_CERO_MAS_DER,
+                               String.format("%s", (char) tokenSimple));
                        break;
+                       
                    case CERRADURA_CERO_MAS_IZQ:
-                       token = new Token(this.linea, CERRADURA_CERO_MAS_IZQ, String.format("%s", (char) tokenSimple));
+                       token = new Token(this.linea,
+                               CERRADURA_CERO_MAS_IZQ,
+                               String.format("%s", (char) tokenSimple));
                        break;
+                       
                    case CERRADURA_CERO_UNO_DER:
-                       token = new Token(this.linea, CERRADURA_CERO_UNO_DER, String.format("%s", (char) tokenSimple));
+                       token = new Token(this.linea,
+                               CERRADURA_CERO_UNO_DER,
+                               String.format("%s", (char) tokenSimple));
                        break;
+                       
                 default:
                     throw new AssertionError();
             }
