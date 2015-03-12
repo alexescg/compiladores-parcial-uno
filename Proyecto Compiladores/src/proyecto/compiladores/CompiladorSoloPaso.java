@@ -168,9 +168,20 @@ public class CompiladorSoloPaso {
                                CERRADURA_CERO_UNO_DER,
                                String.format("%s", (char) tokenSimple));
                        break;
-                       
+                   case CERRADURA_CERO_UNO_IZQ:
+                       token = new Token(this.linea, CERRADURA_CERO_UNO_IZQ, String.format("%s", (char) tokenSimple));
+                       break;
+                   case ASIGNACIONDOSPUNTOS:
+                       token = new Token(this.linea, ASIGNACIONDOSPUNTOS, String.format("%s", (char) tokenSimple));
+                       break;
+                   case ASIGNACIONIGUAL:
+                       token = new Token(this.linea, ASIGNACIONIGUAL, String.format("%s", (char) tokenSimple));
+                       break;
+                   case APOSTROFES:
+                       token = new Token(this.linea, APOSTROFES, String.format("%s", (char) tokenSimple));
+                       break;
                 default:
-                    throw new AssertionError();
+                    throw new Error("Error de Lexico: El caracter no esta dentro del alfabeto");
             }
            
           }
