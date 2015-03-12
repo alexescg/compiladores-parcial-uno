@@ -61,7 +61,7 @@ public class CompiladorSoloPaso {
     private static final int ASIGNACIONIGUAL = '=';
     private static final int EOF = '.';
     private static final int APOSTROFES = '\'';
-    private static final String ASIGNACION = String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
+    private static final int ASIGNACION =  600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
     private String salida = "";
     private static Integer linea = 1;
@@ -78,7 +78,7 @@ public class CompiladorSoloPaso {
     private StringTokenizer getTokenizer(String codigoFuente) {
         if (this.tokenizer == null) {
             //;&|{}[]:;=.'
-            String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s%s",
+            String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s",
                     (char) FIN_SENT,
                     (char) CONCATENACION,
                     (char) ALTERNACION,
@@ -125,7 +125,7 @@ public class CompiladorSoloPaso {
     }
         //TODO
 
-    private Token lexer() {
+    private Token lexer(String codigoFuente) {
         Token token = null;
         if (this.getTokenizer("").hasMoreTokens()) {
             String currentToken = this.getTokenizer("").nextToken();
@@ -172,8 +172,20 @@ public class CompiladorSoloPaso {
                                         (char) tokenSimple));
                         break;
                     case ASIGNACIONDOSPUNTOS:
-                        token = new Token(CompiladorSoloPaso.linea, ASIGNACIONDOSPUNTOS, 
-                                String.format("%s", (char) tokenSimple));
+                        currentToken = this.getTokenizer("").nextToken();
+                        if(currentToken.charAt(0) == (char) ASIGNACIONDOSPUNTOS){
+                            currentToken = this.getTokenizer("").nextToken();
+                            if (currentToken.charAt(0)== (char) ASIGNACIONIGUAL) {
+                                token = new Token(this.linea, ASIGNACION, 
+                                        String.format("%s", (char) tokenSimple));
+                            }else{
+                                throw  new Error("Error de Sintaxis: El caracter no "
+                                    + "esta dentro del alfabeto");
+                            }
+                        }else{
+                            throw  new Error("Error de Sintaxis: El caracter no "
+                                    + "esta dentro del alfabeto");
+                        }
                         break;
                     case ASIGNACIONIGUAL:
                         token = new Token(CompiladorSoloPaso.linea, ASIGNACIONIGUAL, 
@@ -197,17 +209,29 @@ public class CompiladorSoloPaso {
     }
 
     public static Boolean isVariable(String textoRevisar) {
-        Boolean isVariable = true;
+        Boolean isVariable = false;
         if (Character.isAlphabetic(textoRevisar.charAt(0))) {
             for (int i = 1; i < textoRevisar.length(); i++) {
-                isVariable = isVariable
-                        && (Character.isDigit(textoRevisar.charAt(i))
-                        || Character.isAlphabetic(textoRevisar.charAt(i)));
+                isVariable = Character.isDigit(textoRevisar.charAt(i))
+                        || Character.isAlphabetic(textoRevisar.charAt(i));
             }
 
         }
 
         return isVariable;
+    }
+    
+    
+    
+    public static void main(String... args) {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        while(analizador.getTokenizer("Entero::=" +
+"{{['+'|'-']&Variable&(['+'|'-'])&{Variable2}}&{['+'|'-'] & <Variable3>};").hasMoreTokens()){
+            Token t = analizador.lexer("");
+            System.out.println(t);
+        
+        }
+        
     }
 
 }
