@@ -72,4 +72,32 @@ public class CompiladorSoloPaso {
         return null;
     }
     
+    public void prog(){
+        //TODO
+    }
+    
+    public void conjProds(){
+        //TODO
+    }
+    
+    public void prod(){
+        //TODO
+    }
+    
+    public void expr(){
+        //TODO
+    }
+    
+    public void term(){
+        //TODO
+    }
+    
+    public void factor(){
+        //TODO
+    }
+    
+    public void primario(){
+        //TODO
+    }
+    
 }
