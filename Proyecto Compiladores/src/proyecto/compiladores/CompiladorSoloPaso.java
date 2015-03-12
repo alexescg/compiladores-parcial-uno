@@ -117,16 +117,19 @@ public class CompiladorSoloPaso {
     }
     
     public void primario(){
+    
+    }
         //TODO
+        
     private Token lexer(){
         Token token = null;
         if(this.getTokenizer("").hasMoreTokens()){
             String currentToken = this.getTokenizer("")
                 .nextToken();
-        if(isVariable(currentToken)){
+            if(isVariable(currentToken)){
                 token = new Token(this.linea, VARIABLE, currentToken);
             }
-        else{
+            else{
                int tokenSimple = currentToken.charAt(0);
                switch (tokenSimple) {
                    case FIN_SENT :
