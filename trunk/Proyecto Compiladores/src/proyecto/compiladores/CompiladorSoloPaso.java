@@ -51,4 +51,15 @@ package proyecto.compiladores;
  */
 public class CompiladorSoloPaso {
     
+    private static final int FIN_SENT = ';';
+    private static final int CONCATENACION = '&';
+    private static final int ALTERNACION = '|';
+    private static final int CERRADURA_CERO_MAS_DER = '}';
+    private static final int CERRADURA_CERO_MAS_IZQ = '{';
+    private static final int CERRADURA_CERO_UNO_DER = ']';
+    private static final int CERRADURA_CERO_UNO_IZQ = '[';
+    private static final int ASIGNACIONDOSPUNTOS = ':';
+    private static final int ASIGNACIONIGUAL = '=';
+    private static final int EOF = '.';
+    
 }
