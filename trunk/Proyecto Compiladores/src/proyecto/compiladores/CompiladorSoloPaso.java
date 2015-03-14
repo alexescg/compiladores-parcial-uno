@@ -63,6 +63,8 @@ public class CompiladorSoloPaso {
     private static final int APOSTROFES = '\'';
     private static final int VARIABLEIZQ = '<';
     private static final int VARIABLEDER = '>';
+    private static final int PAR_DER = ')';
+    private static final int PAR_IZQ = '(';
     private static int TERMINAL = 800;
     
     private static final int ASIGNACION =  600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
@@ -81,8 +83,8 @@ public class CompiladorSoloPaso {
      */
     private StringTokenizer getTokenizer(String codigoFuente) {
         if (this.tokenizer == null) {
-            //;&|{}[]:;=.'<>
-            String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s%s%s",
+            //;&|{}[]:;=.'<>()
+            String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
                     (char) FIN_SENT,
                     (char) CONCATENACION,
                     (char) ALTERNACION,
@@ -95,7 +97,9 @@ public class CompiladorSoloPaso {
                     (char) EOF,
                     (char) APOSTROFES,
                     (char) VARIABLEIZQ,
-                    (char) VARIABLEDER
+                    (char) VARIABLEDER,
+                    (char) PAR_DER,
+                    (char) PAR_IZQ
             );
             this.tokenizer = new StringTokenizer(codigoFuente.trim(), alfabetoSimbolos, true);
         }
@@ -153,6 +157,9 @@ public class CompiladorSoloPaso {
             if (isVariable(currentToken)) {
                 token = new Token(CompiladorSoloPaso.linea, VARIABLE, currentToken);
             } else {
+//                if(isTerminal(currentToken)){
+//                    token = new Token(CompiladorSoloPaso.linea, TERMINAL, currentToken);
+//                } else{
                 int tokenSimple = currentToken.charAt(0);
                 switch (tokenSimple) {
                     case FIN_SENT:
@@ -226,7 +233,21 @@ public class CompiladorSoloPaso {
                         break;
                         
                     case APOSTROFES:
-                        token = new Token(CompiladorSoloPaso.linea, APOSTROFES, 
+                        currentToken = this.getTokenizer("").nextToken();
+                        while(currentToken.charAt(0) != (char) APOSTROFES){
+                        currentToken = this.getTokenizer("").nextToken();
+                        }
+                        
+                        token = new Token(CompiladorSoloPaso.linea, TERMINAL, 
+                                String.format("%s", (char) tokenSimple));
+                        
+                        break;
+                    case PAR_DER:
+                        token = new Token(CompiladorSoloPaso.linea, PAR_DER, 
+                                String.format("%s", (char) tokenSimple));
+                        break;
+                    case PAR_IZQ:
+                        token = new Token(CompiladorSoloPaso.linea, PAR_IZQ, 
                                 String.format("%s", (char) tokenSimple));
                         break;
                     default:
@@ -234,8 +255,8 @@ public class CompiladorSoloPaso {
                                 + " El caracter no esta dentro del alfabeto");
                 }
 
-            }
-
+            //}//--
+          }
         } else {
             token = new Token(this.linea, EOF, ".");
         }
@@ -257,20 +278,21 @@ public class CompiladorSoloPaso {
     
     public static Boolean isTerminal(String textoRevisar){
         Boolean isTerminal = false;
-        if (textoRevisar.charAt(0) == (char) APOSTROFES) {
-            int i = 0;
-            while (textoRevisar.charAt(i) != (char) APOSTROFES) {
-                i++;
-            }
+        if(textoRevisar.charAt(0)== (char) APOSTROFES){
             
+            System.out.println(textoRevisar);
+           for (int i = 0; i < textoRevisar.length(); i++) {
+                isTerminal = isVariable(textoRevisar);
+            }
         }
         return isTerminal;
+        
     }
     
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
         while(analizador.getTokenizer("<Entero>::=" +
-"{{['+'|'-']&Variable&(['+'|'-'])&{Variable2}}&{['+'|'-'] & <Variable3>};").hasMoreTokens()){
+"{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};").hasMoreTokens()){
             Token t = analizador.lexer("");
             System.out.println(t);
         
