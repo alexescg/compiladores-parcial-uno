@@ -63,6 +63,7 @@ public class CompiladorSoloPaso {
     private static final int APOSTROFES = '\'';
     private static final int VARIABLEIZQ = '<';
     private static final int VARIABLEDER = '>';
+    private static int TERMINAL = 800;
     
     private static final int ASIGNACION =  600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
@@ -254,7 +255,17 @@ public class CompiladorSoloPaso {
         return isVariable;
     }
     
-    
+    public static Boolean isTerminal(String textoRevisar){
+        Boolean isTerminal = false;
+        if (textoRevisar.charAt(0) == (char) APOSTROFES) {
+            int i = 0;
+            while (textoRevisar.charAt(i) != (char) APOSTROFES) {
+                i++;
+            }
+            
+        }
+        return isTerminal;
+    }
     
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
