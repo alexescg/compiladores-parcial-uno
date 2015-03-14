@@ -1,6 +1,7 @@
 package proyecto.compiladores;
 
 import java.util.StringTokenizer;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 
 /**
  * Construir un CSP para un lenguaje de producciones gramaticales, el alfabeto
@@ -67,7 +68,7 @@ public class CompiladorSoloPaso {
     private static final int PAR_IZQ = '(';
     private static int TERMINAL = 800;
     private static final String ASIGNACIONABSOLUTA = "::=";
-    private static final int ASIGNACION =  600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
+    private static final int ASIGNACION = 600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
     private String salida = "";
     private static Integer linea = 1;
@@ -105,51 +106,142 @@ public class CompiladorSoloPaso {
         }
         return this.tokenizer;
     }
-    public void parser(){
+
+    public void parser() {
         //descomentar cuando este listo
         //this.currentToken = lexer();
-     prog();
-        if (this.currentToken.getToken() == EOF){
+        prog();
+        if (this.currentToken.getToken() == EOF) {
             System.out.println(String.format("Resultado: %s \n "
                     + "El programa ha compilado correctamente.", this.salida));
         }
-    }   
-    
+    }
+
+    //listo
     public void prog() {
         conjProds();
     }
 
     public void conjProds() {
         prod();
+
     }
 
     public void prod() {
         expr();
+        if (!(this.currentToken.getToken() == FIN_SENT)) {
+            throw new Error("Error de sintaxis: Se esperaba ;");
+        } else {
+            if (this.currentToken.getToken() == ASIGNACIONDOSPUNTOS) {
+                this.currentToken = lexer();
+                this.salida = String.format("%s%s", this.salida,
+                        this.currentToken.getLexema());
+            } else {
+                if (this.currentToken.getToken() == VARIABLEIZQ) {
+                    this.salida = String.format("%s%s", this.salida,
+                            this.currentToken.getLexema());
+                } else {
+                    if (this.currentToken.getToken() == VARIABLE) {
+                        this.salida = String.format("%s%s", this.salida,
+                                this.currentToken.getLexema());
+                    } else {
+                        if (this.currentToken.getToken() == VARIABLEDER) {
+                            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                        } else {
+                            throw new Error("YOLO");
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
     public void expr() {
         term();
+        if (this.currentToken.getToken() == ALTERNACION) {
+            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+        } else {
+            throw new Error("Error");
+        }
     }
 
     public void term() {
         factor();
+        if (this.currentToken.getToken() == CONCATENACION) {
+            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+        } else {
+            throw new Error("Error");
+        }
     }
 
     public void factor() {
         primario();
+        while (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ || this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
+            if (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ) {
+                this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                expr();
+                if (this.currentToken.getToken() == CERRADURA_CERO_MAS_DER) {
+                    this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                } else {
+                    throw new Error("Error");
+                }
+            } else {
+                if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
+                    this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                    expr();
+                    if (this.currentToken.getToken() == CERRADURA_CERO_UNO_DER) {
+                        this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                    } else {
+                        throw new Error("Error");
+                    }
+
+                }
+            }
+        }
     }
 
     public void primario() {
-
+        if (this.currentToken.getToken() == TERMINAL) {
+            this.salida = String.format("%s%s", this.salida,
+                    this.currentToken.getLexema());
+        } else {
+            if (this.currentToken.getToken() == PAR_DER) {
+                this.salida = String.format("%s%s", this.salida,
+                        this.currentToken.getLexema());
+                this.currentToken = lexer();
+                expr();
+                if (this.currentToken.getToken() == PAR_IZQ) {
+                    this.salida = String.format("%s%s", this.salida,
+                            this.currentToken.getLexema());
+                }
+            } else {
+                if (this.currentToken.getToken() == VARIABLEDER) {
+                    this.salida = String.format("%s%s", this.salida,
+                            this.currentToken.getLexema());
+                    this.currentToken = lexer();
+                    if (this.currentToken.getToken() == VARIABLE) {
+                        this.salida = String.format("%s%s", this.salida,
+                                this.currentToken.getLexema());
+                        this.currentToken = lexer();
+                        if (this.currentToken.getToken() == VARIABLEIZQ) {
+                            this.salida = String.format("%s%s", this.salida,
+                                    this.currentToken.getLexema());
+                        } else {
+                            throw new Error("Error Error Error");
+                        }
+                    }
+                }
+            }
+        }
     }
-        //TODO
 
-    private Token lexer(String codigoFuente) {
+    private Token lexer() {
         Token token = null;
         if (this.getTokenizer("").hasMoreTokens()) {
             String currentToken = this.getTokenizer("").nextToken();
 
-            // Por si necesitamos agrupar literalmente toda la delacarcion de variable
+            // Por si necesitamos agrupar literalmente toda la declaracion de variable
 //             if (currentToken.charAt(0) == (char) VARIABLEIZQ) {
 //                currentToken = this.getTokenizer("").nextToken();
 //                if (isVariable(currentToken)) {
@@ -162,7 +254,6 @@ public class CompiladorSoloPaso {
 //                    
 //                }
 //            }
-            
             if (isVariable(currentToken)) {
                 token = new Token(CompiladorSoloPaso.linea, VARIABLE, currentToken);
             } else {
@@ -203,63 +294,63 @@ public class CompiladorSoloPaso {
                                 String.format("%s", (char) tokenSimple));
                         break;
                     case CERRADURA_CERO_UNO_IZQ:
-                        token = new Token(CompiladorSoloPaso.linea, 
+                        token = new Token(CompiladorSoloPaso.linea,
                                 CERRADURA_CERO_UNO_IZQ, String.format("%s",
                                         (char) tokenSimple));
                         break;
-                        
+
                     case VARIABLEIZQ:
-                        token = new Token(CompiladorSoloPaso.linea, 
+                        token = new Token(CompiladorSoloPaso.linea,
                                 VARIABLEIZQ, String.format("%s",
                                         (char) tokenSimple));
                         break;
-                    
+
                     case ASIGNACIONDOSPUNTOS:
-                         currentToken = this.getTokenizer("").nextToken();
-                        if(currentToken.charAt(0) == (char) ASIGNACIONDOSPUNTOS){
+                        currentToken = this.getTokenizer("").nextToken();
+                        if (currentToken.charAt(0) == (char) ASIGNACIONDOSPUNTOS) {
                             currentToken = this.getTokenizer("").nextToken();
-                            if (currentToken.charAt(0)== (char) ASIGNACIONIGUAL) {
-                                token = new Token(this.linea, ASIGNACION, 
+                            if (currentToken.charAt(0) == (char) ASIGNACIONIGUAL) {
+                                token = new Token(this.linea, ASIGNACION,
                                         String.format("%s", ASIGNACIONABSOLUTA));
-                            }else{
-                                throw  new Error("Error de Sintaxis: El caracter no "
-                                    + "esta dentro del alfabeto");
+                            } else {
+                                throw new Error("Error de Sintaxis: El caracter no "
+                                        + "esta dentro del alfabeto");
                             }
-                        }else{
-                            throw  new Error("Error de Sintaxis: El caracter no "
+                        } else {
+                            throw new Error("Error de Sintaxis: El caracter no "
                                     + "esta dentro del alfabeto");
                         }
                         break;
                     case ASIGNACIONIGUAL:
-                        token = new Token(CompiladorSoloPaso.linea, ASIGNACIONIGUAL, 
+                        token = new Token(CompiladorSoloPaso.linea, ASIGNACIONIGUAL,
                                 String.format("%s", (char) tokenSimple));
                         break;
-                        
+
                     case VARIABLEDER:
-                        token = new Token(CompiladorSoloPaso.linea, 
+                        token = new Token(CompiladorSoloPaso.linea,
                                 VARIABLEDER, String.format("%s",
                                         (char) tokenSimple));
                         break;
-                        
+
                     case APOSTROFES:
-                        String extra ="";
+                        String extra = "";
                         currentToken = this.getTokenizer("").nextToken();
-                        while(currentToken.charAt(0) != (char) APOSTROFES){
-                        
-                            extra= extra + currentToken.charAt(0);
+                        while (currentToken.charAt(0) != (char) APOSTROFES) {
+
+                            extra = extra + currentToken.charAt(0);
                             currentToken = this.getTokenizer("").nextToken();
                         }
-                        
-                        token = new Token(CompiladorSoloPaso.linea, TERMINAL, 
+
+                        token = new Token(CompiladorSoloPaso.linea, TERMINAL,
                                 String.format("%s%s%s", (char) tokenSimple, extra, (char) tokenSimple));
-                        
+
                         break;
                     case PAR_DER:
-                        token = new Token(CompiladorSoloPaso.linea, PAR_DER, 
+                        token = new Token(CompiladorSoloPaso.linea, PAR_DER,
                                 String.format("%s", (char) tokenSimple));
                         break;
                     case PAR_IZQ:
-                        token = new Token(CompiladorSoloPaso.linea, PAR_IZQ, 
+                        token = new Token(CompiladorSoloPaso.linea, PAR_IZQ,
                                 String.format("%s", (char) tokenSimple));
                         break;
                     default:
@@ -267,8 +358,8 @@ public class CompiladorSoloPaso {
                                 + " El caracter no esta dentro del alfabeto");
                 }
 
-            //}//--
-          }
+                //}//--
+            }
         } else {
             token = new Token(this.linea, EOF, ".");
         }
@@ -287,29 +378,29 @@ public class CompiladorSoloPaso {
 
         return isVariable;
     }
-    
-    public static Boolean isTerminal(String textoRevisar){
+
+    public static Boolean isTerminal(String textoRevisar) {
         Boolean isTerminal = false;
-        if(textoRevisar.charAt(0)== (char) APOSTROFES){
-            
+        if (textoRevisar.charAt(0) == (char) APOSTROFES) {
+
             System.out.println(textoRevisar);
-           for (int i = 0; i < textoRevisar.length(); i++) {
+            for (int i = 0; i < textoRevisar.length(); i++) {
                 isTerminal = isVariable(textoRevisar);
             }
         }
         return isTerminal;
-        
+
     }
-    
+
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        while(analizador.getTokenizer("<Entero>::=" +
-            "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()){
-            Token t = analizador.lexer("");
-            System.out.println(t);
-        
+        while (analizador.getTokenizer("<Entero>::="
+                + "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()) {
+            //Token t = analizador.lexer("");
+            //System.out.println(t);
+
         }
-        
+
     }
 
 }
