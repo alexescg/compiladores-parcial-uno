@@ -66,14 +66,13 @@ public class CompiladorSoloPaso {
     private static final int PAR_DER = ')';
     private static final int PAR_IZQ = '(';
     private static int TERMINAL = 800;
-    
+    private static final String ASIGNACIONABSOLUTA = "::=";
     private static final int ASIGNACION =  600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
     private String salida = "";
     private static Integer linea = 1;
     private StringTokenizer tokenizer = null;
     private int VARIABLE = 500;
-    private static final String PATHARCHIVO = "";
 
     //TODO checar este javadoc
     /**
@@ -107,8 +106,9 @@ public class CompiladorSoloPaso {
         return this.tokenizer;
     }
     public void parser(){
-        this.currentToken = lexer();
-        prog();
+        //descomentar cuando este listo
+        //this.currentToken = lexer();
+     prog();
         if (this.currentToken.getToken() == EOF){
             System.out.println(String.format("Resultado: %s \n "
                     + "El programa ha compilado correctamente.", this.salida));
@@ -144,7 +144,7 @@ public class CompiladorSoloPaso {
     }
         //TODO
 
-    private Token lexer() {
+    private Token lexer(String codigoFuente) {
         Token token = null;
         if (this.getTokenizer("").hasMoreTokens()) {
             String currentToken = this.getTokenizer("").nextToken();
@@ -220,7 +220,7 @@ public class CompiladorSoloPaso {
                             currentToken = this.getTokenizer("").nextToken();
                             if (currentToken.charAt(0)== (char) ASIGNACIONIGUAL) {
                                 token = new Token(this.linea, ASIGNACION, 
-                                        String.format("%s", (char) tokenSimple));
+                                        String.format("%s", ASIGNACIONABSOLUTA));
                             }else{
                                 throw  new Error("Error de Sintaxis: El caracter no "
                                     + "esta dentro del alfabeto");
@@ -304,8 +304,9 @@ public class CompiladorSoloPaso {
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
         while(analizador.getTokenizer("<Entero>::=" +
-"{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()){
-//            Token t = analizador.lexer("");
+            "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()){
+            Token t = analizador.lexer("");
+            System.out.println(t);
         
         }
         
