@@ -73,6 +73,7 @@ public class CompiladorSoloPaso {
     private static Integer linea = 1;
     private StringTokenizer tokenizer = null;
     private int VARIABLE = 500;
+    private static final String PATHARCHIVO = "";
 
     //TODO checar este javadoc
     /**
@@ -105,7 +106,15 @@ public class CompiladorSoloPaso {
         }
         return this.tokenizer;
     }
-
+    public void parser(){
+        this.currentToken = lexer();
+        prog();
+        if (this.currentToken.getToken() == EOF){
+            System.out.println(String.format("Resultado: %s \n "
+                    + "El programa ha compilado correctamente.", this.salida));
+        }
+    }   
+    
     public void prog() {
         conjProds();
     }
@@ -135,7 +144,7 @@ public class CompiladorSoloPaso {
     }
         //TODO
 
-    private Token lexer(String codigoFuente) {
+    private Token lexer() {
         Token token = null;
         if (this.getTokenizer("").hasMoreTokens()) {
             String currentToken = this.getTokenizer("").nextToken();
@@ -292,9 +301,8 @@ public class CompiladorSoloPaso {
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
         while(analizador.getTokenizer("<Entero>::=" +
-"{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};").hasMoreTokens()){
-            Token t = analizador.lexer("");
-            System.out.println(t);
+"{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()){
+//            Token t = analizador.lexer("");
         
         }
         
