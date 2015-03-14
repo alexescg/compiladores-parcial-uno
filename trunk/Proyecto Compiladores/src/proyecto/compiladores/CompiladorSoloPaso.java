@@ -242,13 +242,16 @@ public class CompiladorSoloPaso {
                         break;
                         
                     case APOSTROFES:
+                        String extra ="";
                         currentToken = this.getTokenizer("").nextToken();
                         while(currentToken.charAt(0) != (char) APOSTROFES){
-                        currentToken = this.getTokenizer("").nextToken();
+                        
+                            extra= extra + currentToken.charAt(0);
+                            currentToken = this.getTokenizer("").nextToken();
                         }
                         
                         token = new Token(CompiladorSoloPaso.linea, TERMINAL, 
-                                String.format("%s", (char) tokenSimple));
+                                String.format("%s%s%s", (char) tokenSimple, extra, (char) tokenSimple));
                         
                         break;
                     case PAR_DER:
