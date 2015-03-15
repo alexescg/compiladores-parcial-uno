@@ -1,3 +1,5 @@
+package pruebasUnitarias;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -27,6 +29,14 @@ public class CompiladorSoloPasoUnitTest {
             
      CompiladorSoloPaso analizador = new CompiladorSoloPaso();
         String codigo = readFile("FileToInspec");
+    }
+    
+    @Test
+    public void FileFoundTest() throws IOException{
+            
+     CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        System.out.println("-------->" + readFile("FileToInspect"));
+        assertNotNull(readFile("FileToInspect"));
     }
     
     
