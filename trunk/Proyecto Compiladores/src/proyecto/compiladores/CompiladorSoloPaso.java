@@ -417,7 +417,6 @@ public class CompiladorSoloPaso {
             codigoFuente += linea; 
         }
         br.close();
-        System.out.println(codigoFuente);
         return codigoFuente;
     }
 }
