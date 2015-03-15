@@ -118,15 +118,25 @@ public class CompiladorSoloPaso {
         }
     }
 
+    /**
+     * Método que llama a la derivación de prog.
+     */
     public void prog() {
         conjProds();
     }
 
+    /**
+     * Método que llama a la derivación de conjProds.
+     */
     public void conjProds() {
         prod();
 
     }
 
+    /**
+     * Método que llama a la derivación de conjProds, verifica si es 
+     * una variable asignada a una expr.
+     */
     public void prod() {
         if (this.currentToken.getToken() == VARIABLEIZQ) {
             this.salida = String.format("%s%s", this.salida,
@@ -165,6 +175,10 @@ public class CompiladorSoloPaso {
         }
     }
 
+    /**
+     * Método que llama a la derivación de expr, verifica si es un term ó 
+     * una expr alternada a un term.
+     */
     public void expr() {
         term();
         if (this.currentToken.getToken() == ALTERNACION) {
@@ -174,6 +188,10 @@ public class CompiladorSoloPaso {
         }
     }
 
+    /**
+     * Método que llama a la derivación a term, verifica si es un factor ó
+     * un term concatenado a un factor.
+     */
     public void term() {
         factor();
         if (this.currentToken.getToken() == CONCATENACION) {
@@ -185,6 +203,11 @@ public class CompiladorSoloPaso {
         }
     }
 
+    /**
+     * Método que llama a la derivación de factor, verifica si el factor es un
+     * primario ó una expr con cerraduras cero_mas ó una expr con cerradura
+     * cero_uno.
+     */
     public void factor() {
         primario();
         while (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ || this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
@@ -214,6 +237,10 @@ public class CompiladorSoloPaso {
         }
     }
 
+    /**
+     * Método que llama a la derivación de primario, verifica si el primario
+     * es un terminal, expr entre parentesis ó una variable entre diamantes.
+     */
     public void primario() {
         if (this.currentToken.getToken() == TERMINAL) {
             this.salida = String.format("%s%s", this.salida,
