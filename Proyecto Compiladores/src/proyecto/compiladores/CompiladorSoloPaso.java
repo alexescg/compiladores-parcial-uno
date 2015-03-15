@@ -108,10 +108,9 @@ public class CompiladorSoloPaso {
     }
 
     public void parser() {
-        //descomentar cuando este listo
-        //this.currentToken = lexer();
+        this.currentToken = lexer();
         prog();
-        if (this.currentToken.getToken() == EOF) {
+        if (!(this.currentToken.getToken() == EOF)) {
             System.out.println(String.format("Resultado: %s \n "
                     + "El programa ha compilado correctamente.", this.salida));
         }
@@ -128,50 +127,62 @@ public class CompiladorSoloPaso {
     }
 
     public void prod() {
-        expr();
-        if (!(this.currentToken.getToken() == FIN_SENT)) {
-            throw new Error("Error de sintaxis: Se esperaba ;");
-        } else {
-            if (this.currentToken.getToken() == ASIGNACIONDOSPUNTOS) {
-                this.currentToken = lexer();
+        if (this.currentToken.getToken() == VARIABLEIZQ) {
+            this.salida = String.format("%s%s", this.salida,
+                    this.currentToken.getLexema());
+            this.currentToken = lexer();
+            if (this.currentToken.getToken() == VARIABLE) {
                 this.salida = String.format("%s%s", this.salida,
                         this.currentToken.getLexema());
-            } else {
-                if (this.currentToken.getToken() == VARIABLEIZQ) {
+                this.currentToken = lexer();
+                if (this.currentToken.getToken() == VARIABLEDER) {
                     this.salida = String.format("%s%s", this.salida,
                             this.currentToken.getLexema());
-                } else {
-                    if (this.currentToken.getToken() == VARIABLE) {
+                    this.currentToken = lexer();
+                    if (this.currentToken.getToken() == 600) {
                         this.salida = String.format("%s%s", this.salida,
                                 this.currentToken.getLexema());
-                    } else {
-                        if (this.currentToken.getToken() == VARIABLEDER) {
+                        this.currentToken = lexer();
+                        expr();
+                        if (this.currentToken.getToken() == FIN_SENT) {
                             this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
                         } else {
-                            throw new Error("YOLO");
+                            throw new Error("Error de sintaxis: Se esperaba ;");
                         }
+                    } else {
+                        throw new Error("Error de sintaxis 1");
                     }
-                }
 
+                } else {
+                    throw new Error("Error de sintaxis 2");
+                }
+            } else {
+                throw new Error("Error de sintaxis 3");
             }
+        } else {
+            throw new Error("Error de sintaxis 4");
         }
+
     }
 
     public void expr() {
         term();
         if (this.currentToken.getToken() == ALTERNACION) {
             this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
-        } else {
-            throw new Error("Error");
+            this.currentToken = lexer();
+            term();
         }
+
     }
 
     public void term() {
         factor();
         if (this.currentToken.getToken() == CONCATENACION) {
             this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
-        } else {
-            throw new Error("Error");
+            this.currentToken = lexer();
+            term();
+           factor();
+            
         }
     }
 
@@ -180,20 +191,24 @@ public class CompiladorSoloPaso {
         while (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ || this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
             if (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ) {
                 this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                this.currentToken = lexer();
                 expr();
                 if (this.currentToken.getToken() == CERRADURA_CERO_MAS_DER) {
                     this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                    this.currentToken = lexer();
                 } else {
-                    throw new Error("Error");
+                    //throw new Error("Error yolo");
                 }
             } else {
                 if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
                     this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                    this.currentToken = lexer();
                     expr();
                     if (this.currentToken.getToken() == CERRADURA_CERO_UNO_DER) {
                         this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                        this.currentToken = lexer();
                     } else {
-                        throw new Error("Error");
+                       // throw new Error("Error popo");
                     }
 
                 }
@@ -205,18 +220,20 @@ public class CompiladorSoloPaso {
         if (this.currentToken.getToken() == TERMINAL) {
             this.salida = String.format("%s%s", this.salida,
                     this.currentToken.getLexema());
+            this.currentToken = lexer();
         } else {
-            if (this.currentToken.getToken() == PAR_DER) {
+            if (this.currentToken.getToken() == PAR_IZQ) {
                 this.salida = String.format("%s%s", this.salida,
                         this.currentToken.getLexema());
                 this.currentToken = lexer();
                 expr();
-                if (this.currentToken.getToken() == PAR_IZQ) {
+                if (this.currentToken.getToken() == PAR_DER) {
                     this.salida = String.format("%s%s", this.salida,
                             this.currentToken.getLexema());
+                    this.currentToken = lexer();
                 }
             } else {
-                if (this.currentToken.getToken() == VARIABLEDER) {
+                if (this.currentToken.getToken() == VARIABLEIZQ) {
                     this.salida = String.format("%s%s", this.salida,
                             this.currentToken.getLexema());
                     this.currentToken = lexer();
@@ -224,9 +241,10 @@ public class CompiladorSoloPaso {
                         this.salida = String.format("%s%s", this.salida,
                                 this.currentToken.getLexema());
                         this.currentToken = lexer();
-                        if (this.currentToken.getToken() == VARIABLEIZQ) {
+                        if (this.currentToken.getToken() == VARIABLEDER) {
                             this.salida = String.format("%s%s", this.salida,
                                     this.currentToken.getLexema());
+                            this.currentToken = lexer();
                         } else {
                             throw new Error("Error Error Error");
                         }
@@ -353,6 +371,9 @@ public class CompiladorSoloPaso {
                         token = new Token(CompiladorSoloPaso.linea, PAR_IZQ,
                                 String.format("%s", (char) tokenSimple));
                         break;
+                    case EOF:
+                        token = new Token(CompiladorSoloPaso.linea, EOF,
+                                String.format("%s", (char) tokenSimple));
                     default:
                         throw new Error("Error de Lexico:"
                                 + " El caracter no esta dentro del alfabeto");
@@ -394,12 +415,9 @@ public class CompiladorSoloPaso {
 
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        while (analizador.getTokenizer("<Entero>::="
-                + "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens()) {
-            //Token t = analizador.lexer("");
-            //System.out.println(t);
-
-        }
+        analizador.getTokenizer("<Entero>::=".trim()
+                + "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
+        analizador.parser();
 
     }
 
