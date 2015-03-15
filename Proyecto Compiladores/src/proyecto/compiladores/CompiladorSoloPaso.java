@@ -154,17 +154,17 @@ public class CompiladorSoloPaso {
                             throw new Error("Error de sintaxis: Se esperaba ;");
                         }
                     } else {
-                        throw new Error("Error de sintaxis 1");
+                        throw new Error("Error de sintaxis: se esperaba Asignacion");
                     }
 
                 } else {
-                    throw new Error("Error de sintaxis 2");
+                    throw new Error("Error de sintaxis: se esperaba Cierre de Variable");
                 }
-            } else {
-                throw new Error("Error de sintaxis 3");
+            } else{
+                   throw  new Error("Error de sintaxis: se esperaba una variable");
             }
         } else {
-            throw new Error("Error de sintaxis 4");
+            throw new Error("Error de sintaxis: Se esperaba inicio de variable");
         }
 
     }
@@ -198,8 +198,8 @@ public class CompiladorSoloPaso {
                 if (this.currentToken.getToken() == CERRADURA_CERO_MAS_DER) {
                     this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_MAS_DER);
                     this.currentToken = lexer();
-                } else {
-                    //throw new Error("Error yolo");
+                } else{
+                    throw new Error("Error de Sintaxis: Se esperaba Cerradura }");
                 }
             } else {
                 if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
@@ -209,8 +209,8 @@ public class CompiladorSoloPaso {
                     if (this.currentToken.getToken() == CERRADURA_CERO_UNO_DER) {
                         this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_UNO_DER);
                         this.currentToken = lexer();
-                    } else {
-                       // throw new Error("Error popo");
+                    }else{
+                        throw new Error("Error de Sintaxis: Se esperaba cerradura ]");
                     }
 
                 }
@@ -231,6 +231,8 @@ public class CompiladorSoloPaso {
                 if (this.currentToken.getToken() == PAR_DER) {
                     this.currentToken = lexer();
                     
+                }else{
+                    throw new Error("Error de Sintaxis: Se esperaba )");
                 }
             } else {
                 if (this.currentToken.getToken() == VARIABLEIZQ) {
@@ -247,8 +249,10 @@ public class CompiladorSoloPaso {
                             this.salida = String.format("%s%s", this.salida,
                                     (char) VARIABLEDER);
                         } else {
-                            throw new Error("Error Error Error");
+                            throw new Error("Se esperaba cierre de variable");
                         }
+                    }else{
+                        throw  new Error("Error de sintaxis: se esperaba una variable");
                     }
                 }
             }
