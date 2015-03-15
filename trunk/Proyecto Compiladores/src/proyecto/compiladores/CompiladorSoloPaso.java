@@ -1,13 +1,9 @@
 package proyecto.compiladores;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 /**
@@ -267,19 +263,6 @@ public class CompiladorSoloPaso {
         if (this.getTokenizer("").hasMoreTokens()) {
             String currentToken = this.getTokenizer("").nextToken();
 
-            // Por si necesitamos agrupar literalmente toda la declaracion de variable
-//             if (currentToken.charAt(0) == (char) VARIABLEIZQ) {
-//                currentToken = this.getTokenizer("").nextToken();
-//                if (isVariable(currentToken)) {
-//                    token = new Token(CompiladorSoloPaso.linea, VARIABLE,currentToken);
-//                    currentToken = this.getTokenizer("").nextToken();
-//                    if (currentToken.charAt(0) == (char) VARIABLEDER) {
-//                        token = new Token(CompiladorSoloPaso.linea, VARIABLE, currentToken);
-//                        
-//                    }
-//                    
-//                }
-//            }
             if (isVariable(currentToken)) {
                 token = new Token(CompiladorSoloPaso.linea, VARIABLE, currentToken);
             } else {
