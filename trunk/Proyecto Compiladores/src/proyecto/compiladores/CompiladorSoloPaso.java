@@ -420,10 +420,8 @@ public class CompiladorSoloPaso {
 
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-//        analizador.getTokenizer("<Entero>::=".trim()
-//                + "{{['+'|'-']&<Variable>}&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
         analizador.getTokenizer("<Entero>::=".trim()
-                + "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
+                + "{{['+'|'-']&<Variable>}&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
         analizador.parser();
 
     }
