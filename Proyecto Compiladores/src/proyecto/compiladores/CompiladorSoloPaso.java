@@ -1,7 +1,11 @@
 package proyecto.compiladores;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.StringTokenizer;
-import jdk.nashorn.internal.codegen.CompilerConstants;
 
 /**
  * Construir un CSP para un lenguaje de producciones gramaticales, el alfabeto
@@ -129,7 +133,7 @@ public class CompiladorSoloPaso {
     public void prod() {
         if (this.currentToken.getToken() == VARIABLEIZQ) {
             this.salida = String.format("%s%s", this.salida,
-                    this.currentToken.getLexema());
+                    (char) VARIABLEIZQ);
             this.currentToken = lexer();
             if (this.currentToken.getToken() == VARIABLE) {
                 this.salida = String.format("%s%s", this.salida,
@@ -137,15 +141,15 @@ public class CompiladorSoloPaso {
                 this.currentToken = lexer();
                 if (this.currentToken.getToken() == VARIABLEDER) {
                     this.salida = String.format("%s%s", this.salida,
-                            this.currentToken.getLexema());
+                            (char) VARIABLEDER);
                     this.currentToken = lexer();
                     if (this.currentToken.getToken() == 600) {
-                        this.salida = String.format("%s%s", this.salida,
-                                this.currentToken.getLexema());
                         this.currentToken = lexer();
                         expr();
+                        this.salida = String.format("%s%s", this.salida,
+                                ASIGNACIONABSOLUTA);
                         if (this.currentToken.getToken() == FIN_SENT) {
-                            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                            //this.salida = String.format("%s%s", this.salida, (char) FIN_SENT);
                         } else {
                             throw new Error("Error de sintaxis: Se esperaba ;");
                         }
@@ -168,20 +172,19 @@ public class CompiladorSoloPaso {
     public void expr() {
         term();
         if (this.currentToken.getToken() == ALTERNACION) {
-            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
             this.currentToken = lexer();
             term();
+            this.salida = String.format("%s%s", this.salida, (char) ALTERNACION);
         }
-
     }
 
     public void term() {
         factor();
         if (this.currentToken.getToken() == CONCATENACION) {
-            this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
             this.currentToken = lexer();
+            this.salida = String.format("%s%s", this.salida, (char) CONCATENACION);
             term();
-           factor();
+            factor();
             
         }
     }
@@ -190,22 +193,21 @@ public class CompiladorSoloPaso {
         primario();
         while (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ || this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
             if (this.currentToken.getToken() == CERRADURA_CERO_MAS_IZQ) {
-                this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
                 this.currentToken = lexer();
                 expr();
                 if (this.currentToken.getToken() == CERRADURA_CERO_MAS_DER) {
-                    this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                    this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_MAS_DER);
                     this.currentToken = lexer();
                 } else {
                     //throw new Error("Error yolo");
                 }
             } else {
                 if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
-                    this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
                     this.currentToken = lexer();
                     expr();
+                    
                     if (this.currentToken.getToken() == CERRADURA_CERO_UNO_DER) {
-                        this.salida = String.format("%s%s", this.salida, this.currentToken.getLexema());
+                        this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_UNO_DER);
                         this.currentToken = lexer();
                     } else {
                        // throw new Error("Error popo");
@@ -223,28 +225,27 @@ public class CompiladorSoloPaso {
             this.currentToken = lexer();
         } else {
             if (this.currentToken.getToken() == PAR_IZQ) {
-                this.salida = String.format("%s%s", this.salida,
-                        this.currentToken.getLexema());
                 this.currentToken = lexer();
                 expr();
+                
                 if (this.currentToken.getToken() == PAR_DER) {
-                    this.salida = String.format("%s%s", this.salida,
-                            this.currentToken.getLexema());
                     this.currentToken = lexer();
+                    
                 }
             } else {
                 if (this.currentToken.getToken() == VARIABLEIZQ) {
-                    this.salida = String.format("%s%s", this.salida,
-                            this.currentToken.getLexema());
                     this.currentToken = lexer();
+                    this.salida = String.format("%s%s", this.salida,
+                            (char) VARIABLEIZQ);
+                    
                     if (this.currentToken.getToken() == VARIABLE) {
                         this.salida = String.format("%s%s", this.salida,
                                 this.currentToken.getLexema());
                         this.currentToken = lexer();
                         if (this.currentToken.getToken() == VARIABLEDER) {
-                            this.salida = String.format("%s%s", this.salida,
-                                    this.currentToken.getLexema());
                             this.currentToken = lexer();
+                            this.salida = String.format("%s%s", this.salida,
+                                    (char) VARIABLEDER);
                         } else {
                             throw new Error("Error Error Error");
                         }
@@ -415,10 +416,53 @@ public class CompiladorSoloPaso {
 
     public static void main(String... args) {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+//        analizador.getTokenizer("<Entero>::=".trim()
+//                + "{{['+'|'-']&<Variable>}&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
         analizador.getTokenizer("<Entero>::=".trim()
                 + "{{['+'|'-']&<Variable>&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
         analizador.parser();
 
     }
+    
+//    private void leerPuntajes() {
+//        File archivo = null;
+//        FileReader fr = null;
+//        BufferedReader br = null;
+//
+//        try {
+//         // Apertura del fichero y creacion de BufferedReader para poder
+//            // hacer una lectura comoda (disponer del metodo readLine()).
+//            archivo = new File("puntajes.txt");
+//            fr = new FileReader(archivo);
+//            br = new BufferedReader(fr);
+//
+//            // Lectura del fichero
+//            String linea;
+//            int i = 0;
+//            vector = new Puntaje[10];
+//            while ((linea = br.readLine()) != null) {
+//                vector[i] = new Puntaje(linea);
+//                i++;
+//                System.out.println(linea);
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//         // En el finally cerramos el fichero, para asegurarnos
+//            // que se cierra tanto si todo va bien como si salta 
+//            // una excepcion.
+//            try {
+//                if (null != fr) {
+//                    fr.close();
+//                }
+//            } catch (Exception e2) {
+//                e2.printStackTrace();
+//            }
+//        }
+//    }
+
+    
+
 
 }
