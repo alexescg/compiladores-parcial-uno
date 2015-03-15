@@ -78,12 +78,11 @@ public class CompiladorSoloPaso {
     private StringTokenizer tokenizer = null;
     private int VARIABLE = 500;
     private static String ARCHIVOPATH = "codigoFuente";
-    //TODO checar este javadoc
     /**
      * Tokenizer para obtener los tokens del codigo fuente
      *
      * @param codigoFuente que se leera mediante un archivo
-     * @return codigo fuente sin espacios?
+     * @return tokenValido
      */
     private StringTokenizer getTokenizer(String codigoFuente) {
         if (this.tokenizer == null) {
@@ -119,7 +118,6 @@ public class CompiladorSoloPaso {
         }
     }
 
-    //listo
     public void prog() {
         conjProds();
     }
@@ -165,7 +163,6 @@ public class CompiladorSoloPaso {
         } else {
             throw new Error("Error de sintaxis: Se esperaba inicio de variable");
         }
-
     }
 
     public void expr() {
@@ -266,9 +263,6 @@ public class CompiladorSoloPaso {
             if (isVariable(currentToken)) {
                 token = new Token(CompiladorSoloPaso.linea, VARIABLE, currentToken);
             } else {
-//                if(isTerminal(currentToken)){
-//                    token = new Token(CompiladorSoloPaso.linea, TERMINAL, currentToken);
-//                } else{
                 int tokenSimple = currentToken.charAt(0);
                 switch (tokenSimple) {
                     case FIN_SENT:
@@ -369,8 +363,6 @@ public class CompiladorSoloPaso {
                         throw new Error("Error de Lexico:"
                                 + " El caracter no esta dentro del alfabeto");
                 }
-
-                //}//--
             }
         } else {
             token = new Token(this.linea, EOF, ".");
@@ -385,9 +377,7 @@ public class CompiladorSoloPaso {
                 isVariable = Character.isDigit(textoRevisar.charAt(i))
                         || Character.isAlphabetic(textoRevisar.charAt(i));
             }
-
         }
-
         return isVariable;
     }
 
@@ -409,7 +399,6 @@ public class CompiladorSoloPaso {
         String codigo = readFile(ARCHIVOPATH);
         analizador.getTokenizer(codigo.trim()).hasMoreTokens();
         analizador.parser();
-
     }
 
     /**
