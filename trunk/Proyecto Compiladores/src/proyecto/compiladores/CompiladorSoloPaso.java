@@ -2,8 +2,11 @@ package proyecto.compiladores;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
@@ -78,7 +81,7 @@ public class CompiladorSoloPaso {
     private static Integer linea = 1;
     private StringTokenizer tokenizer = null;
     private int VARIABLE = 500;
-
+    private static String ARCHIVOPATH = "codigoFuente";
     //TODO checar este javadoc
     /**
      * Tokenizer para obtener los tokens del codigo fuente
@@ -160,8 +163,8 @@ public class CompiladorSoloPaso {
                 } else {
                     throw new Error("Error de sintaxis: se esperaba Cierre de Variable");
                 }
-            } else{
-                   throw  new Error("Error de sintaxis: se esperaba una variable");
+            } else {
+                throw new Error("Error de sintaxis: se esperaba una variable");
             }
         } else {
             throw new Error("Error de sintaxis: Se esperaba inicio de variable");
@@ -185,7 +188,7 @@ public class CompiladorSoloPaso {
             this.salida = String.format("%s%s", this.salida, (char) CONCATENACION);
             term();
             factor();
-            
+
         }
     }
 
@@ -198,18 +201,18 @@ public class CompiladorSoloPaso {
                 if (this.currentToken.getToken() == CERRADURA_CERO_MAS_DER) {
                     this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_MAS_DER);
                     this.currentToken = lexer();
-                } else{
+                } else {
                     throw new Error("Error de Sintaxis: Se esperaba Cerradura }");
                 }
             } else {
                 if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
                     this.currentToken = lexer();
                     expr();
-                    
+
                     if (this.currentToken.getToken() == CERRADURA_CERO_UNO_DER) {
                         this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_UNO_DER);
                         this.currentToken = lexer();
-                    }else{
+                    } else {
                         throw new Error("Error de Sintaxis: Se esperaba cerradura ]");
                     }
 
@@ -227,11 +230,11 @@ public class CompiladorSoloPaso {
             if (this.currentToken.getToken() == PAR_IZQ) {
                 this.currentToken = lexer();
                 expr();
-                
+
                 if (this.currentToken.getToken() == PAR_DER) {
                     this.currentToken = lexer();
-                    
-                }else{
+
+                } else {
                     throw new Error("Error de Sintaxis: Se esperaba )");
                 }
             } else {
@@ -239,7 +242,7 @@ public class CompiladorSoloPaso {
                     this.currentToken = lexer();
                     this.salida = String.format("%s%s", this.salida,
                             (char) VARIABLEIZQ);
-                    
+
                     if (this.currentToken.getToken() == VARIABLE) {
                         this.salida = String.format("%s%s", this.salida,
                                 this.currentToken.getLexema());
@@ -251,8 +254,8 @@ public class CompiladorSoloPaso {
                         } else {
                             throw new Error("Se esperaba cierre de variable");
                         }
-                    }else{
-                        throw  new Error("Error de sintaxis: se esperaba una variable");
+                    } else {
+                        throw new Error("Error de sintaxis: se esperaba una variable");
                     }
                 }
             }
@@ -418,53 +421,31 @@ public class CompiladorSoloPaso {
 
     }
 
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException {
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        analizador.getTokenizer("<Entero>::=".trim()
-                + "{{['+'|'-']&<Variable>}&(['+'|'-'])&{<Variable2>}}&{['+'|'-']&<Variable3>};".trim()).hasMoreTokens();
+        String codigo = readFile(ARCHIVOPATH);
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
         analizador.parser();
 
     }
-    
-//    private void leerPuntajes() {
-//        File archivo = null;
-//        FileReader fr = null;
-//        BufferedReader br = null;
-//
-//        try {
-//         // Apertura del fichero y creacion de BufferedReader para poder
-//            // hacer una lectura comoda (disponer del metodo readLine()).
-//            archivo = new File("puntajes.txt");
-//            fr = new FileReader(archivo);
-//            br = new BufferedReader(fr);
-//
-//            // Lectura del fichero
-//            String linea;
-//            int i = 0;
-//            vector = new Puntaje[10];
-//            while ((linea = br.readLine()) != null) {
-//                vector[i] = new Puntaje(linea);
-//                i++;
-//                System.out.println(linea);
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//         // En el finally cerramos el fichero, para asegurarnos
-//            // que se cierra tanto si todo va bien como si salta 
-//            // una excepcion.
-//            try {
-//                if (null != fr) {
-//                    fr.close();
-//                }
-//            } catch (Exception e2) {
-//                e2.printStackTrace();
-//            }
-//        }
-//    }
 
-    
+    /**
+     * Metodo para leer archivo que recibe como parametro el path del archivo a leerse
+     * @param path
+     * @return codigo fuente contenido dentro del archivo
+     * @throws IOException 
+     */
+    private static String readFile(String path) throws IOException {
+        String codigoFuente = "";
+        FileInputStream fis = new FileInputStream(path);
 
-
+        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+        String linea = null;
+        while ((linea  = br.readLine()) != null) {
+            codigoFuente += linea; 
+        }
+        br.close();
+        System.out.println(codigoFuente);
+        return codigoFuente;
+    }
 }
