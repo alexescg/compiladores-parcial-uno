@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
  * Entrada por archivos Codigo funcional JAva Doc Pruebas(almenos 8 de mas de 5
  * lineas cada uno) Estandar de codificacion tecnica PRD
  *
- * @author Alejandro Escobedo Garcia.
+ * @author Alejandro Escobedo Garcia, Erik Zubia, Daniela Santillanes
  */
 public class CompiladorSoloPaso {
 
