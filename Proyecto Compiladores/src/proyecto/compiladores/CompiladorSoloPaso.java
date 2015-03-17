@@ -84,7 +84,7 @@ public class CompiladorSoloPaso {
      * @param codigoFuente que se leera mediante un archivo
      * @return tokenValido
      */
-    private StringTokenizer getTokenizer(String codigoFuente) {
+    public StringTokenizer getTokenizer(String codigoFuente) {
         if (this.tokenizer == null) {
             //;&|{}[]:;=.'<>()
             String alfabetoSimbolos = String.format("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
@@ -434,7 +434,7 @@ public class CompiladorSoloPaso {
      * @return codigo fuente contenido dentro del archivo
      * @throws IOException 
      */
-    private static String readFile(String path) throws IOException {
+    public static String readFile(String path) throws IOException {
         String codigoFuente = "";
         FileInputStream fis = new FileInputStream(path);
 
