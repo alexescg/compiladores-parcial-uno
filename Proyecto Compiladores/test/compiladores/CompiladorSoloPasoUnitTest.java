@@ -43,12 +43,6 @@ public class CompiladorSoloPasoUnitTest {
         analizador.parser();
     }
     
-    public void testCerradura() {
-        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        String codigo = "{};";
-        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
-        analizador.parser();
-    }
     
     @Test(expected = Error.class)
     public void errorCerraduraDerecha() throws IOException{
