@@ -9,9 +9,11 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import proyecto.compiladores.CompiladorSoloPaso;
+import static proyecto.compiladores.CompiladorSoloPaso.readFile;
 
 /**
  *
@@ -23,28 +25,70 @@ public class CompiladorSoloPasoUnitTest {
     public void FileNotFoundTest() throws IOException {
 
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        String codigo = readFile("FileToInspec");
+        analizador.readFile("FileTooInspec");
+    }
+    
+    @Test
+    public void FileFoundTest() throws IOException {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = analizador.readFile("FileToInspect");
+        assert(codigo != "");
     }
 
     @Test
-    public void FileFoundTest() throws IOException {
-
+    public void procesarExpresion() throws IOException{
         CompiladorSoloPaso analizador = new CompiladorSoloPaso();
-        System.out.println("-------->" + readFile("FileToInspect"));
-        assertNotNull(readFile("FileToInspect"));
+        String codigo = readFile("codigoFuente");
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    public void testCerradura() {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = "{};";
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    @Test(expected = Error.class)
+    public void errorCerraduraDerecha() throws IOException{
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = readFile("FileToInspect");
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    @Test
+    public void testVariable() {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = "<Entero>::=<Variable>;";
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    @Test(expected = Error.class)
+    public void testVariableError() {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = "<Entero>::=<Variable;";
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    @Test
+    public void testAsignacion() {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = "<Entero>::={{['+'|'-']&<Variable>}};";
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
+    }
+    
+    @Test(expected = Error.class)
+    public void testAsignacionError() {
+        CompiladorSoloPaso analizador = new CompiladorSoloPaso();
+        String codigo = "<Entero>:={{['+'|'-']&<Variable>}};";
+        analizador.getTokenizer(codigo.trim()).hasMoreTokens();
+        analizador.parser();
     }
 
-    private static String readFile(String path) throws IOException {
-        String codigoFuente = "";
-        FileInputStream fis = new FileInputStream(path);
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-        String linea = null;
-        while ((linea = br.readLine()) != null) {
-            codigoFuente += linea;
-        }
-        br.close();
-        return codigoFuente;
-    }
-
+    
 }
