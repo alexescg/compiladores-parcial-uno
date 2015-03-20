@@ -218,7 +218,7 @@ public class CompiladorSoloPaso {
                     this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_MAS_DER);
                     this.currentToken = lexer();
                 } else {
-                    throw new Error("Error de Sintaxis: Se esperaba Cerradura }");
+                    throw new Error("Error de Sintaxis: Se esperaba Cerradura } ó &");
                 }
             } else {
                 if (this.currentToken.getToken() == CERRADURA_CERO_UNO_IZQ) {
@@ -229,7 +229,7 @@ public class CompiladorSoloPaso {
                         this.salida = String.format("%s%s", this.salida, (char) CERRADURA_CERO_UNO_DER);
                         this.currentToken = lexer();
                     } else {
-                        throw new Error("Error de Sintaxis: Se esperaba cerradura ]");
+                        throw new Error("Error de Sintaxis: Se esperaba cerradura ] ó |");
                     }
 
                 }
@@ -281,7 +281,7 @@ public class CompiladorSoloPaso {
             }
         }
     }
-
+    
     private Token lexer() {
         Token token = null;
         if (this.getTokenizer("").hasMoreTokens()) {
@@ -396,7 +396,12 @@ public class CompiladorSoloPaso {
         }
         return token;
     }
-
+    
+    /**
+     * Método que verifica que el token sea una variable.
+     * @param textoRevisar codigo a checar por tokens
+     * @return verdadero o falso con la verificacion de que si el token es o no una variable
+     */
     public static Boolean isVariable(String textoRevisar) {
         Boolean isVariable = false;
         if (Character.isAlphabetic(textoRevisar.charAt(0))) {
@@ -407,7 +412,12 @@ public class CompiladorSoloPaso {
         }
         return isVariable;
     }
-
+    
+    /**
+     * Método que verifica que el token sea una terminal.
+     * @param textoRevisar codigo a checar por tokens
+     * @return verdadero o falso con la verificacion de que si el token es o no una terimnal
+     */
     public static Boolean isTerminal(String textoRevisar) {
         Boolean isTerminal = false;
         if (textoRevisar.charAt(0) == (char) APOSTROFES) {
