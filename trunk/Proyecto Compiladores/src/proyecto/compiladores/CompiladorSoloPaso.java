@@ -69,15 +69,16 @@ public class CompiladorSoloPaso {
     private static final int VARIABLEDER = '>';
     private static final int PAR_DER = ')';
     private static final int PAR_IZQ = '(';
-    private static int TERMINAL = 800;
+    private static final int TERMINAL = 800;
     private static final String ASIGNACIONABSOLUTA = "::=";
     private static final int ASIGNACION = 600; //String.format("%s%s%s", (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONDOSPUNTOS, (char) ASIGNACIONIGUAL);
     private Token currentToken;
     private String salida = "";
     private static Integer linea = 1;
     private StringTokenizer tokenizer = null;
-    private int VARIABLE = 500;
-    private static String ARCHIVOPATH = "codigoFuente";
+    private final int VARIABLE = 500;
+    private static final String ARCHIVOPATH = "codigoFuente";
+
     /**
      * Tokenizer para obtener los tokens del codigo fuente
      *
@@ -134,8 +135,8 @@ public class CompiladorSoloPaso {
     }
 
     /**
-     * Método que llama a la derivación de conjProds, verifica si es 
-     * una variable asignada a una expr.
+     * Método que llama a la derivación de conjProds, verifica si es una
+     * variable asignada a una expr.
      */
     public void prod() {
         if (this.currentToken.getToken() == VARIABLEIZQ) {
@@ -176,8 +177,8 @@ public class CompiladorSoloPaso {
     }
 
     /**
-     * Método que llama a la derivación de expr, verifica si es un term ó 
-     * una expr alternada a un term.
+     * Método que llama a la derivación de expr, verifica si es un term ó una
+     * expr alternada a un term.
      */
     public void expr() {
         term();
@@ -189,8 +190,8 @@ public class CompiladorSoloPaso {
     }
 
     /**
-     * Método que llama a la derivación a term, verifica si es un factor ó
-     * un term concatenado a un factor.
+     * Método que llama a la derivación a term, verifica si es un factor ó un
+     * term concatenado a un factor.
      */
     public void term() {
         factor();
@@ -238,8 +239,8 @@ public class CompiladorSoloPaso {
     }
 
     /**
-     * Método que llama a la derivación de primario, verifica si el primario
-     * es un terminal, expr entre parentesis ó una variable entre diamantes.
+     * Método que llama a la derivación de primario, verifica si el primario es
+     * un terminal, expr entre parentesis ó una variable entre diamantes.
      */
     public void primario() {
         if (this.currentToken.getToken() == TERMINAL) {
@@ -422,7 +423,6 @@ public class CompiladorSoloPaso {
         Boolean isTerminal = false;
         if (textoRevisar.charAt(0) == (char) APOSTROFES) {
 
-            System.out.println(textoRevisar);
             for (int i = 0; i < textoRevisar.length(); i++) {
                 isTerminal = isVariable(textoRevisar);
             }
@@ -439,10 +439,12 @@ public class CompiladorSoloPaso {
     }
 
     /**
-     * Metodo para leer archivo que recibe como parametro el path del archivo a leerse
+     * Metodo para leer archivo que recibe como parametro el path del archivo a
+     * leerse
+     *
      * @param path
      * @return codigo fuente contenido dentro del archivo
-     * @throws IOException 
+     * @throws IOException
      */
     public static String readFile(String path) throws IOException {
         String codigoFuente = "";
@@ -450,8 +452,8 @@ public class CompiladorSoloPaso {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(fis));
         String linea = null;
-        while ((linea  = br.readLine()) != null) {
-            codigoFuente += linea; 
+        while ((linea = br.readLine()) != null) {
+            codigoFuente += linea;
         }
         br.close();
         return codigoFuente;
